@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIAuto Blogging - Login</title>
+  {% comment %} {% include "../../components/favicon.html" %} {% endcomment %}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .swal-modal {
+      background-color: #121212;
+      border: 1px solid #00A54F;
+    }
+    .swal-text {
+      color: #fff;
+    }
+    .swal-title {
+      color: #00A54F;
+    }
+    .swal-overlay {
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+    .swal-button {
+      padding: 7px 19px;
+      border-radius: 2px;
+      background-color: transparent;
+      font-size: 12px;
+      color: #fff;
+      border: 2px solid #00A54F;
+      text-shadow: 0px -1px 0px rgba(255, 255, 255, 0.3);
+    }
+    .swal-button:hover {
+      background-color: #00A54F;
+      color: #000;
+    }
+    .swal-icon--success:before{
+      display: none;
+    }
+    .swal-icon--success:after{
+      display: none;
+    }
+    .swal-icon--success__hide-corners{
+      display: none;
+    }
+    .swal-icon--error:before{
+      display: none;
+    }
+    .swal-icon--error:after{
+      display: none;
+    }
+    .swal-icon--error-corners{
+      display: none;
+    }
+    body {
+      background-color: #f0f0f0; /* Gray background color for the body */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h2 {
+      text-align: center;
+    }
+    form {
+      background-color: #121212; /* White background for the login form */
+      box-shadow: 0 4px 8px #00A54F; /* Shadow for the form */
+      width: 320px;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    :root {
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: none;
+      --tw-ring-color: none;
+      --tw-ring-offset-shadow: none;
+      --tw-ring-shadow: none;
+      --bs-font-sans-serif: "Be Vietnam Pro",sans-serif;
+      --bs-body-font-family: var(--bs-font-sans-serif);
+      font-family: var(--bs-body-font-family);
+    }
+    input:-internal-autofill-selected {
+        appearance: menulist-button;
+        background-image: none !important;
+        background-color: none !important;
+        color: none !important;
+    }
+
+    [type=checkbox]:focus, [type=radio]:focus, [multiple]:focus, [type=date]:focus, [type=datetime-local]:focus, [type=email]:focus, [type=month]:focus, [type=number]:focus, [type=password]:focus, [type=search]:focus, [type=tel]:focus, [type=text]:focus, [type=time]:focus, [type=url]:focus, [type=week]:focus, select:focus, textarea:focus {
+      border-color: #00A54F;
+      box-shadow: none;
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      --tw-ring-offset-color: none;
+      --tw-ring-color: none;
+      --tw-ring-offset-shadow: none;
+      --tw-ring-shadow: none;
+    }
+  </style>
+</head>
+<body style="background-color: #000">
+  <div class="items-center text-center md:grid md:grid-cols-2 md:justify-between md:gap-y-0">
+    {% comment %} <a class="hidden md:block" href='{% url "dashboard_page" %}'>
+      <img
+        src="{% static 'admin_op/logo/medicine_mart.webp' %}"
+        class="mx-auto w-[50%] lg:w-[50%]"
+        alt="Medicine Mart Logo"
+      />
+    </a> {% endcomment %}
+    <form class="reset-password-form" method="POST" class="space-y-4 mx-auto " >
+		{% csrf_token %}
+		<h4 class="mb-3 text-gray-300">Reset your password</h4>
+		<p class="mb-3 text-gray-300">Please enter your email address</p>
+		<div>
+			<label for="{{ form.email.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-300 text-start">Your email</label>
+			<input type="email" name="email" id="{{ form.email.id_for_label }}" class="bg-[#121212] border border-gray-300 text-gray-300 text-sm rounded-lg block w-full p-2.5" placeholder="name@company.com" required>
+		</div>	
+		<div class="text-sm font-medium text-gray-300 dark:text-gray-300 mt-4">
+			<button class="text-[#00A54F] hover:underline dark:text-blue-500" type="submit">Send Reset link</button>
+		</div>
+	</form>
+  </div>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    {% block customJS %} {% endblock customJS %} 
+    {% if messages %} 
+      {% for mess in messages%} 
+        {% if mess.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+          <script>
+            swal("Error", "{{mess}}", "error");
+          </script>
+        {% endif %} 
+        {% if mess.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+          <script>
+            swal("Success", "{{mess}}", "success");
+          </script>
+        {% endif %} 
+      {% endfor %} 
+    {% endif %}
+</body>
+</html>

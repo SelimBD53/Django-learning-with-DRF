@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+{% block contentSection %}
+<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="showForm()">Create Student</button>
+
+<div class="hidden" id="student-form">
+{% include 'components/student_form.html' %}
+</div>
+
+<div id="table">
+{% include 'components/student_table.html' %}
+</div>
+
+{% endblock  %}
+{% block customeJS %}
+<script>
+    function checkpassword(value){
+        password = document.getElementById('password').value;
+        var url = `/check-password/`;
+        $.ajax({
+            url: url,
+            type: `GET`,
+            data: {
+                'password': password,
+                'cpassword': value
+            },
+            success: function(data) {
+                if (data['status'] == 'failed'){
+                    document.getElementById('password-error').classList.remove('hidden');
+                }else{
+                    document.getElementById('password-error').classList.add('hidden');
+                }
+            },
+        })
+    } 
+    function showForm(){
+        document.getElementById('student-form').classList.remove('hidden');
+        document.getElementById('table').classList.add('hidden');
+    }
+    function deleteStudent(id){
+        var url =  `/student-delete/`+id+`/`;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data){
+                if (data['status'] == 'success'){
+                    let row = document.getElementById(`row_${id}`);
+                    row.remove(); 
+                }
+            },
+        })
+    }
+</script>
+<script src="{% static 'app1/js/student.js' %}"></script>
+{% comment %} <script>
+    function loadData(id){
+        var url = `/student-data/`+id+`/`;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data){
+                console.log(Object.keys(data).length);
+                for(i=0; i<Object.keys(data).length; i++) {
+                    if(Object.keys(data)[i] == 'image'){
+                        var img = document.getElementById('image');
+                        console.log("img", img);
+                        var base64String = data.image;
+                        console.log("64", base64String);
+                        var binary = atob(base64String);
+                        console.log("binary", binary)
+                        var array = new Uint8Array(binary.length);
+                        for(var j = 0; j < binary.length; j++){
+                            array[j] = binary.charCodeAt(j);
+                        }
+                        var blob = new Blob([array], {type: 'image/*'});
+                        var file = new File([blob], document.getElementById(`img_${data.id}`).value, {type: 'image/png'})
+                        console.log(file);
+                        img.value = "";
+                        DataTransfer= new DataTransfer();
+                        DataTransfer.items.add(file);
+                        img.files = DataTransfer.files;
+                    }
+                
+                }     
+            },
+        })
+    }
+</script> {% endcomment %}
+{% endblock %}
