@@ -26,7 +26,7 @@ class StudentViewSet(viewsets.GenericViewSet):
         "dept": ["exact"],
         "courses__id": ["in"]
     }
-        
+    
     search_fields = ['user__first_name', 'user__username'] 
     ordering_fields = ['id', 'roll_no']     
     
@@ -34,9 +34,10 @@ class StudentViewSet(viewsets.GenericViewSet):
     #     if self.action == 'list':
     #         return StudentListSerializer(*args, **kwargs)
     #     return super().get_serializer(*args, **kwargs)
+
     def get_queryset(self):
         return Student.objects.all().distinct()
-    
+
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True, context={'request': request})

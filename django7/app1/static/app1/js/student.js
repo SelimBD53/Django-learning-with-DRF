@@ -40,6 +40,7 @@ function handelApi(){
             }
             tableBody.innerHTML = new_data;
             console.log("Data fetched Successfully", data);
+            // windows.location.href=""; // javascript ar khatra full url liktha hoy . data store hobar por kon page a jaba sai ta.
         },
         error: function(xhr, status,error){
             console.log("Error Fetching data:", error);
