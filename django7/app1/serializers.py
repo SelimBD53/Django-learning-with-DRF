@@ -104,3 +104,20 @@ class StudentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student 
         fields = "__all__"
+        
+class StudentRegistrationSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    
+    class Meta:
+        model = Student
+        fields = ['user', 'phone']
+        
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user_instance = User.objects.create(**user_data)
+        student = Student.objects.get(user=user_instance)
+        for key, value in validated_data.items():
+            setattr(student, key, value)
+        student.save()
+        return student
+        

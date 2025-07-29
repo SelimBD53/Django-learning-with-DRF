@@ -5,11 +5,14 @@ from . import views
 from . import api
 from . import api_view
 from rest_framework import routers
-
+from .auth_app import CoustomLoginView
 router = routers.DefaultRouter()
 router.register('studentlist', api_view.StudentViewSet, basename='student')
-urlpatterns = [
+router.register('student-registration', api_view.StudentRegView, basename='student_registration')
+urlpatterns = [           
     path('', include(router.urls)),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('login-student/', CoustomLoginView.as_view()),
     path('accounts/login/', views.login_page, name='login_page'),
     path('accounts/logout/', views.logout_page, name='logout_page'),
     path('', views.index, name='home'),

@@ -6,6 +6,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15)
     address = models.TextField()
+    role = models.CharField(max_length=50, choices=[('student','Student'), ('teacher','Teacher')], default='student')
     profile_pic = ResizedImageField(size=[300, 300], upload_to='profile_pics', null=True, blank=True, force_format='webp', quality=100)
     
     @property
