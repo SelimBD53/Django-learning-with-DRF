@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from .models import Student, Course
 from django.contrib.auth.models import User
+from drf_extra_fields.fields import Base64ImageField
 #serializers,modelserializers,hyperlinkModelSerializer
-
+ 
 class CourseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     class Meta:
@@ -34,9 +35,23 @@ class UserSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     courses = CourseSerializer(required=False, many=True)
+    profile_pic = Base64ImageField(required=False, allow_null=True)
     class Meta:
         model = Student 
         fields = "__all__"
+        
+    def validate(self, data):
+        if 'user' in data:
+            user_data = data['user']
+            if 'email' in user_data:
+                email = user_data['email']
+                if User.objects.filter(email=email).exists():
+                    raise serializers.ValidationError("Email already exists")
+        if 'phone' in data:
+            phone = data['phone']
+            if len(phone) < 10:
+                raise serializers.ValidationError("Phone number must be at least 10 digits long")
+        return data
     
     def create(self, validated_data):        # Students [User,Courses] models value created.
         try:

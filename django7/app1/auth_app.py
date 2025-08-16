@@ -18,19 +18,19 @@
 # OAUTH2.0 > third-party authentication service that allows users to log in using their existing accounts from other platforms (e.g., Google, Facebook)
 
 from dj_rest_auth.views import LoginView
-# from django.views.decorators.csrf import csrf_exempt
-# from django.utils.decorators import method_decorator
+
 from app1.models import Student
 from rest_framework.response import Response
 
 class CoustomLoginView(LoginView):
-    # @method_decorator(csrf_exempt)
+ 
     def post(self, request, *args, **kwargs):
         user = self.request.data.get('user')
+        
         student = None
         if "@" in user:
             student = Student.objects.filter(user__email=user).first()
-
+            
         else:
             student = Student.objects.filter(phone=user).first()
         self.request.data['username'] = student.user.username
