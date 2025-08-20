@@ -1,9 +1,31 @@
+import filetype
 from rest_framework import serializers
 from .models import Student, Course
 from django.contrib.auth.models import User
-from drf_extra_fields.fields import Base64ImageField
+from drf_extra_fields.fields import Base64ImageField, Base64FileField
 #serializers,modelserializers,hyperlinkModelSerializer
- 
+
+class Base64FileField(Base64FileField):
+    ALLOWED_TYPES = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        "application/pdf": 'pdf',
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": 'docx',
+        "application/msword": 'doc',
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": 'xlsx',
+    }
+
+    ALLOWED_TYPES = ["jpg", "png", "pdf", "docx", "doc", "xlsx"]
+
+    def get_file_extension(self, filename, decoded_file):
+        extension = filetype.guess_extension(decoded_file)
+        return extension
+    
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            return super().to_internal_value(data)
+        return data
+
 class CourseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     class Meta:
@@ -18,11 +40,11 @@ class CourseSerializer(serializers.ModelSerializer):
             'semester': {'required': False},
             'dept': {'required': False}
         }
-        # def validate(self, data):
-        #     if 'id' not in data:
-        #         if 'name' not in data:
-        #             raise serializers.ValidationError({"message: Name is required"})
-        #     return data
+        def validate(self, data):
+            if 'id' not in data:
+                if 'name' not in data:
+                    raise serializers.ValidationError({"message: Name is required"})
+            return data
         
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,8 +56,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    courses = CourseSerializer(required=False, many=True)
-    profile_pic = Base64ImageField(required=False, allow_null=True)
+    courses = CourseSerializer(required=False, many=True, allow_null=True)
+    profile_pic = Base64FileField(required=False, allow_null=True)
     class Meta:
         model = Student 
         fields = "__all__"
