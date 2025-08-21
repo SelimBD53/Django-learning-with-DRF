@@ -37,6 +37,7 @@ class CoustomLoginView(LoginView):
         self.serializer = self.get_serializer(data=self.request.data)
         self.serializer.is_valid(raise_exception=True)
         self.login()
+        tok = self.get_response().data
         response = {
             "access": self.get_response().data["access"],
             "refresh": self.get_response().data["refresh"],
